@@ -29,7 +29,7 @@
 
     <script type="text/babel">
 
-        const CITIES = [
+        var cities = [
             {name: 'Toronto', url: '../src/images/city-toronto.png', temp: '20'},
             {name: 'Kuala Lumpur', url: '../src/images/city-kualalumpur.png', temp: '20'},
             {name: 'Prague', url: '../src/images/city-prague.png', temp: '20'},
@@ -91,7 +91,7 @@
                 function foo(name){
                     return name.name === e.target.value;
                 };
-                var result = CITIES.filter(foo)[0];
+                var result = cities.filter(foo)[0];
 
                 fetch('/city')
                 .then(response => response.json())
@@ -113,7 +113,7 @@
             render: function() {
                 return (
                     <select value={this.state.city.name} onChange={this.updateCity}>
-                        {CITIES.map(this.eachItem)}
+                        {cities.map(this.eachItem)}
                     </select>
                 );
             }
@@ -124,7 +124,7 @@
 
             getInitialState: function() {
                 return {
-                    city: CITIES[0]
+                    city: cities[0]
                 }
             },
 
