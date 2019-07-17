@@ -3,25 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>React - Component</title>
+    <title>Weather widget</title>
     <script src="../src/js/react.min.js"></script>
     <script src="../src/js/react-dom.min.js"></script>
     <script src="../src/js/browser.min.js"></script>
-
-    <style>
-        .red {
-            color: red;
-        }
-        .green {
-            color: green;
-        }
-        .pressed {
-            background-color: red !important;
-        }
-    </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" 
-            integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" 
-            crossorigin="anonymous">
 </head>
 <body>
 
@@ -29,141 +14,47 @@
 
     <script type="text/babel">
 
-        var cities = [
-            {name: 'Toronto', url: '../src/images/city-toronto.png', temp: '20'},
-            {name: 'Kuala Lumpur', url: '../src/images/city-kualalumpur.png', temp: '20'},
-            {name: 'Prague', url: '../src/images/city-prague.png', temp: '20'},
-            {name: 'Paris', url: '../src/images/city-paris.png', temp: '20'},
-            {name: 'Tokyo', url: '../src/images/city-tokyo.png', temp: '20'},
-            {name: 'NY', url: '../src/images/city-ny.png', temp: '20'},
-            {name: 'Barselona', url: '../src/images/city-barselona.png', temp: '20'},
-            {name: 'Dubai', url: '../src/images/city-dubai.png', temp: '20'}
-        ];
-
-        var Card = React.createClass({
-
-            render: function() {
-
-                var cardStyle = {
-                    width: '18rem',
-                    margin: '1.5rem 0 0 0'
-                };
-
-                return (
-                    <div className="card" style={cardStyle}>
-                        <img class="card-img-top" src={this.props.city.url} alt={this.props.city.name} />
-                        <div className="card-body">
-                            <h5 class="card-title">{this.props.city.name}</h5>
-                            <span>Today is - {this.props.city.temp}°C</span>
-                        </div>
-                    </div>
-                );
-            }
-
-        });
-
-        var Item = React.createClass({
+        var Widget = React.createClass({
 
             getInitialState: function() {
                 return {
-                    city: this.props.city
+                    city: null
                 }
             },
 
-            render: function() {
+            getCurrent: function(){
 
-                return (
-                    <option value={this.props.city.name}>{this.props.city.name}</option>
-                );
-            }
-
-        });
-
-        var Select = React.createClass({
-
-            getInitialState: function() {
-                return {
-                    city: this.props.city
-                }
-            },
-
-            updateCity: function(e) {
-                function foo(name){
-                    return name.name === e.target.value;
-                };
-                var result = cities.filter(foo)[0];
-
-                fetch('/city')
+                fetch('/current')
                 .then(response => response.json())
-                .then(data => data.main.temp)
-                .catch(function(error) {
-                    console.log(error);
-                  });
+                .then(data => {
+                    console.log(data.name)
+                    console.log(data.main.temp);
+                    console.log(data.weather[0].description);
+                    this.setState({
+                        city: data.name
+                      })
+                })
+              },
 
-                this.setState({city: result});
-                this.props.updateCitySelect(result);
-
-                
-            },
-
-            eachItem: function(city, i) {
-                return <Item city={city}/>
-            },
-
-            render: function() {
-                return (
-                    <select value={this.state.city.name} onChange={this.updateCity}>
-                        {cities.map(this.eachItem)}
-                    </select>
-                );
-            }
-
-        });
-
-        var Board = React.createClass({
-
-            getInitialState: function() {
-                return {
-                    city: cities[0]
-                }
-            },
-
-            changeCityBoard: function(city) {
-                this.setState({city: city});
-            },
+              componentDidMount(){
+                this.getCurrent();
+              },
 
             render: function() {
 
                 return (
-                    <div className="jumbotron">
-                        <Select updateCitySelect={this.changeCityBoard} city={this.state.city}/>
-                        <Card city={this.state.city}/>
-                    </div>
+                    <div>{this.state.city}</div>
                 );
             }
 
         });
 
         ReactDOM.render(
-            <Board />,
+            <Widget />,
             document.getElementById('container')
         );
 
     </script>
-
-     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
-            crossorigin="anonymous"></script>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" 
-            integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" 
-            crossorigin="anonymous"></script>
-
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" 
-            integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" 
-            crossorigin="anonymous"></script>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.4/react-bootstrap.min.js"></script>
 
 </body>
 </html>
