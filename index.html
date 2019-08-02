@@ -23,7 +23,86 @@
 
     <script type="text/babel">
 
-        var capitals = capitals;
+        var arrayOfCapitals = [];
+
+        capitals.map(function (obj) {
+            arrayOfCapitals.push(obj.capital);
+        });
+
+        function getSuggestions(value) {
+            var inputValue = value.value.trim().toLowerCase();
+            var inputLength = inputValue.length;
+
+            return inputLength === 0 ? [] : arrayOfCapitals.filter(capital =>
+                capital.toLowerCase().slice(0, inputLength) === inputValue
+            );
+        };
+
+        function getSuggestionValue(suggestion) {
+            return suggestion;
+        };
+
+        function renderSuggestion(suggestion) {
+            return (
+                <span>{suggestion}</span>
+            );
+        };
+
+        var Input = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    value: '',
+                    suggestions: []
+                }
+            },
+
+            onChange: function(event, newValue) {
+                this.setState({
+                    value: newValue.newValue
+                });
+            },
+
+            onSuggestionsFetchRequested: function (value) {
+                this.setState({
+                    suggestions: getSuggestions(value)
+                });
+            },
+
+            onSuggestionsClearRequested: function(){
+                this.setState({
+                    suggestions: []
+                });
+            },
+
+            onSuggestionSelected: function (event) {
+                console.log('selected');//начинать отсюда!!!!!!!!!!!!!!!!!!!!!
+            },
+
+            render: function() {
+                var value = this.state.value;
+                var suggestions = this.state.suggestions;
+
+                var inputProps = {
+                    placeholder: 'Type smth',
+                    value,
+                    onChange: this.onChange
+                };
+
+
+                return (
+                    <Autosuggest
+                        suggestions={suggestions}
+                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                        getSuggestionValue={getSuggestionValue}
+                        renderSuggestion={renderSuggestion}
+                        inputProps={inputProps}
+                        onSuggestionSelected={this.onSuggestionSelected}
+                    />
+                );
+            }
+        });
 
         var CityName = React.createClass({
 
@@ -161,10 +240,12 @@
 
                 return (
                     <div className="widget__container">
+                    
                         <div className="widget__img">
                             <CityImg img = {this.state.name}/>
                         </div>
                         <div className="widget__board">
+                        <Input />
                             <div className="widget__board--center">
                                 <div className="widget__board--left">
                                     <CityTemp temp = {this.state.temp}/>
