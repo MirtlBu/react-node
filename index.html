@@ -7,6 +7,7 @@
     <script src="https://fb.me/react-0.14.3.js"></script>
     <script src="https://fb.me/react-dom-0.14.3.js"></script>
     <script src="../src/js/browser.min.js"></script>
+    <script src="https://unpkg.com/react-autosuggest/dist/standalone/autosuggest.js"></script>
     <link rel="stylesheet" media="all" href="../src/css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,300&display=swap" rel="stylesheet">
 
@@ -16,6 +17,9 @@
     <div id="widget" class="widget"></div>
 
     <script type='text/javascript' src="../src/js/capitals.js"></script>
+    <script type='text/javascript'>
+        import Autosuggest from 'react-autosuggest';
+    </script>
 
     <script type="text/babel">
 
@@ -125,7 +129,7 @@
                 return {}
             },
 
-            getCurrent: function(){
+            getCurrent: function() {
 
                 fetch('/current')
                 .then(response => response.json())
@@ -138,11 +142,11 @@
                 })
               },
 
-              componentDidMount(){
+            componentDidMount() {
                 this.getCurrent();
-              },
+            },
 
-            render: function() {
+            getDate() {
                 var now = new Date();
                 var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
                 var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -150,6 +154,10 @@
                 var day = days[ now.getDay() ];
                 var month = months[ now.getMonth() ];
                 var date = day + ', ' + now.getDate() + ' ' + month;
+                return date;
+            },
+
+            render: function() {
 
                 return (
                     <div className="widget__container">
@@ -164,7 +172,7 @@
                                 </div>
                                 <div className="widget__board--right">
                                     <CityName name = {this.state.name}/>
-                                    <div className="widget__date">{date}</div>
+                                    <div className="widget__date">{this.getDate()}</div>
                                 </div>
                             </div>
                         </div>
