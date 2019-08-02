@@ -4,22 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Weather widget</title>
-    <script src="../src/js/react.min.js"></script>
-    <script src="../src/js/react-dom.min.js"></script>
+    <script src="https://fb.me/react-0.14.3.js"></script>
+    <script src="https://fb.me/react-dom-0.14.3.js"></script>
     <script src="../src/js/browser.min.js"></script>
+    <link rel="stylesheet" media="all" href="../src/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,300&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-    <div id="container"></div>
+    <div id="widget" class="widget"></div>
+
+    <script type='text/javascript' src="../src/js/capitals.js"></script>
 
     <script type="text/babel">
+
+        var capitals = capitals;
+
+        var CityName = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    name: null
+                }
+            },
+
+            componentDidUpdate(prevProps) {
+                if(this.props.name !== prevProps.name) {
+                    this.setState({name: this.props.name}, function() {
+                        //need time to mutate, so using callback oO holy shit
+                        console.log(this.state.name);
+                    });
+                }
+            },
+
+            render: function() {
+
+                return (
+                    <div className="widget__name">{this.props.name}</div>
+                );
+            }
+
+        });
+
+        var CityTemp = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    temp: null
+                }
+            },
+
+            componentDidUpdate(prevProps) {
+                if(this.props.temp !== prevProps.temp) {
+                    this.setState({temp: this.props.temp});
+                }
+            },
+
+            render: function() {
+
+                return (
+                    <div className="widget__temp">{this.props.temp}°C</div>
+                );
+            }
+
+        });
+
+        var CityDesc = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    desc: null
+                }
+            },
+
+            componentDidUpdate(prevProps) {
+                if(this.props.desc !== prevProps.desc) {
+                    this.setState({desc: this.props.desc});
+                }
+            },
+
+            render: function() {
+
+                return (
+                    <div className="widget__desc">{this.props.desc}</div>
+                );
+            }
+
+        });
+
+        var CityImg = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    img: null
+                }
+            },
+
+            componentDidUpdate(prevProps) {
+                if(this.props.img !== prevProps.img) {
+                    this.setState({img: this.props.img});
+                }
+            },
+
+            render: function() {
+
+                var src = "../src/images/" + this.props.img + ".png";
+                var alt = "image of " + this.props.img;
+
+                return (
+                    <img className="city_img" src={src} alt={alt} />
+                );
+            }
+
+        });
 
         var Widget = React.createClass({
 
             getInitialState: function() {
-                return {
-                    city: null
-                }
+                return {}
             },
 
             getCurrent: function(){
@@ -27,12 +130,11 @@
                 fetch('/current')
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.name)
-                    console.log(data.main.temp);
-                    console.log(data.weather[0].description);
                     this.setState({
-                        city: data.name
-                      })
+                        name: data.name,
+                        temp: data.main.temp,
+                        desc: data.weather[0].description
+                    });
                 })
               },
 
@@ -41,9 +143,32 @@
               },
 
             render: function() {
+                var now = new Date();
+                var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+                var day = days[ now.getDay() ];
+                var month = months[ now.getMonth() ];
+                var date = day + ', ' + now.getDate() + ' ' + month;
 
                 return (
-                    <div>{this.state.city}</div>
+                    <div className="widget__container">
+                        <div className="widget__img">
+                            <CityImg img = {this.state.name}/>
+                        </div>
+                        <div className="widget__board">
+                            <div className="widget__board--center">
+                                <div className="widget__board--left">
+                                    <CityTemp temp = {this.state.temp}/>
+                                    <CityDesc desc = {this.state.desc}/>
+                                </div>
+                                <div className="widget__board--right">
+                                    <CityName name = {this.state.name}/>
+                                    <div className="widget__date">{date}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 );
             }
 
@@ -51,7 +176,7 @@
 
         ReactDOM.render(
             <Widget />,
-            document.getElementById('container')
+            document.getElementById('widget')
         );
 
     </script>

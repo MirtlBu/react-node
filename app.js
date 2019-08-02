@@ -8,9 +8,6 @@ var request = require('request');
 var port = 8000;
 var fs = require('fs');
 
-var rawjson = fs.readFileSync('public/src/js/capitals.json');  
-var capitals = JSON.parse(rawjson);
-
 
 app.use(express.static('public'));
 
