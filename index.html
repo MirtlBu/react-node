@@ -57,7 +57,7 @@
             },
 
             onSuggestionSelected: function (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-                console.log(suggestionValue);//начинать отсюда!!!!!!!!!!!!!!!!!!!!!
+                console.log(suggestion);
                 this.setState({value: suggestion}, function() {
                     this.props.getNewCity(this.state.value);
                 });
@@ -87,7 +87,7 @@
                 var suggestions = this.state.suggestions;
 
                 var inputProps = {
-                    placeholder: 'Type smth',
+                    placeholder: 'Enter city name',
                     value,
                     onChange: this.onChange
                 };
@@ -193,6 +193,7 @@
             },
 
             render: function() {
+                console.log(this.props.img);
 
                 var src = "../src/images/" + this.props.img + ".png";
                 var alt = "image of " + this.props.img;
@@ -217,7 +218,7 @@
                 .then(data => {
                     this.setState({
                         name: data.name,
-                        temp: data.main.temp,
+                        temp: Math.round(data.main.temp),
                         desc: data.weather[0].description
                     });
                 })
@@ -229,7 +230,7 @@
                 .then(data => {
                     this.setState({
                         name: data.name,
-                        temp: data.main.temp,
+                        temp: Math.round(data.main.temp),
                         desc: data.weather[0].description
                     });
                 })
