@@ -32,7 +32,7 @@ app.get('/current', function(req, res) {
 });
 
 
-app.get('/city/:city', function(req, res) {
+app.get('/:city', function(req, res) {
     var url = urlOpenWeatherMap + req.params.city + userKey;
     request(url, function (err, response, body) {
         res.send(JSON.parse(body));

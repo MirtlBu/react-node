@@ -29,25 +29,6 @@
             arrayOfCapitals.push(obj.capital);
         });
 
-        function getSuggestions(value) {
-            var inputValue = value.value.trim().toLowerCase();
-            var inputLength = inputValue.length;
-
-            return inputLength === 0 ? [] : arrayOfCapitals.filter(capital =>
-                capital.toLowerCase().slice(0, inputLength) === inputValue
-            );
-        };
-
-        function getSuggestionValue(suggestion) {
-            return suggestion;
-        };
-
-        function renderSuggestion(suggestion) {
-            return (
-                <span>{suggestion}</span>
-            );
-        };
-
         var Input = React.createClass({
 
             getInitialState: function() {
@@ -65,7 +46,7 @@
 
             onSuggestionsFetchRequested: function (value) {
                 this.setState({
-                    suggestions: getSuggestions(value)
+                    suggestions: this.getSuggestions(value)
                 });
             },
 
@@ -75,8 +56,30 @@
                 });
             },
 
-            onSuggestionSelected: function (event) {
-                console.log('selected');//начинать отсюда!!!!!!!!!!!!!!!!!!!!!
+            onSuggestionSelected: function (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
+                console.log(suggestionValue);//начинать отсюда!!!!!!!!!!!!!!!!!!!!!
+                this.setState({value: suggestion}, function() {
+                    this.props.getNewCity(this.state.value);
+                });
+            },
+
+            getSuggestions: function(value) {
+                var inputValue = value.value.trim().toLowerCase();
+                var inputLength = inputValue.length;
+
+                return inputLength === 0 ? [] : arrayOfCapitals.filter(capital =>
+                    capital.toLowerCase().slice(0, inputLength) === inputValue
+                );
+            },
+
+            getSuggestionValue: function(suggestion) {
+                return suggestion;
+            },
+
+            renderSuggestion: function(suggestion) {
+                return (
+                    <span>{suggestion}</span>
+                );
             },
 
             render: function() {
@@ -89,14 +92,13 @@
                     onChange: this.onChange
                 };
 
-
                 return (
                     <Autosuggest
                         suggestions={suggestions}
                         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                        getSuggestionValue={getSuggestionValue}
-                        renderSuggestion={renderSuggestion}
+                        getSuggestionValue={this.getSuggestionValue}
+                        renderSuggestion={this.renderSuggestion}
                         inputProps={inputProps}
                         onSuggestionSelected={this.onSuggestionSelected}
                     />
@@ -219,7 +221,19 @@
                         desc: data.weather[0].description
                     });
                 })
-              },
+            },
+
+            getSelected: function(city) {
+                fetch('/' + city)
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        name: data.name,
+                        temp: data.main.temp,
+                        desc: data.weather[0].description
+                    });
+                })
+            },
 
             componentDidMount() {
                 this.getCurrent();
@@ -245,7 +259,6 @@
                             <CityImg img = {this.state.name}/>
                         </div>
                         <div className="widget__board">
-                        <Input />
                             <div className="widget__board--center">
                                 <div className="widget__board--left">
                                     <CityTemp temp = {this.state.temp}/>
@@ -256,6 +269,7 @@
                                     <div className="widget__date">{this.getDate()}</div>
                                 </div>
                             </div>
+                            <Input getNewCity = {this.getSelected}/>
                         </div>
                     </div>
                 );
