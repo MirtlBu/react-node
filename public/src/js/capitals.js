@@ -178,7 +178,7 @@ var capitals = [
 {"country":"Republic of China (Taiwan)","capital":"Taipei","_id":"7b45e9950a03bd78fef5b2eb062c5e3c"},
 {"country":"Republic of the Congo","capital":"Brazzaville","_id":"7b45e9950a03bd78fef5b2eb062c6cc2"},
 {"country":"Romania","capital":"Bucharest","_id":"7b45e9950a03bd78fef5b2eb062c7af2"},
-{"country":"Russia","capital":"Moscow",Moscow.jpg","_id":"7b45e9950a03bd78fef5b2eb062c85ae"},
+{"country":"Russia","capital":"Moscow","_id":"7b45e9950a03bd78fef5b2eb062c85ae"},
 {"country":"Rwanda","capital":"Kigali","_id":"7b45e9950a03bd78fef5b2eb062c86fe"},
 {"country":"Saint Barthélemy","capital":"Gustavia","_id":"7b45e9950a03bd78fef5b2eb062c8c31"},
 {"country":"Saint Helena","capital":"Jamestown","_id":"7b45e9950a03bd78fef5b2eb062c957f"},
