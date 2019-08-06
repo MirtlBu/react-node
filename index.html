@@ -57,7 +57,7 @@
             },
 
             onSuggestionSelected: function (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-                console.log(suggestion);
+               
                 this.setState({value: suggestion}, function() {
                     this.props.getNewCity(this.state.value);
                 });
@@ -118,7 +118,6 @@
                 if(this.props.name !== prevProps.name) {
                     this.setState({name: this.props.name}, function() {
                         //need time to mutate, so using callback oO holy shit
-                        console.log(this.state.name);
                     });
                 }
             },
@@ -178,6 +177,35 @@
 
         });
 
+        var CityIcon = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    icon: null,
+                    alt: null
+                }
+            },
+
+            componentDidUpdate(prevProps) {
+                if(this.props.icon !== prevProps.icon) {
+                    this.setState({icon: this.props.icon, alt: this.props.alt});
+                }
+            },
+
+            render: function() {
+
+                var src = "../src/icons/" + this.props.icon + ".svg";
+                var alt = this.props.alt + " icon";
+
+                return (
+                   <img className ="widget__icon" src= {src} alt={alt}/>
+
+                    
+                );
+            }
+
+        });
+
         var CityImg = React.createClass({
 
             getInitialState: function() {
@@ -193,22 +221,25 @@
             },
 
             render: function() {
-                console.log(this.props.img);
 
                 var src = "../src/images/" + this.props.img + ".png";
                 var alt = "image of " + this.props.img;
 
                 return (
-                    <img className="city_img" src={src} alt={alt} />
+                    <img className ="city_img" src={src} alt={alt} />
                 );
             }
 
         });
 
+
+
         var Widget = React.createClass({
 
             getInitialState: function() {
-                return {}
+                return {
+                    classname: 'widget__container'
+                }
             },
 
             getCurrent: function() {
@@ -219,19 +250,24 @@
                     this.setState({
                         name: data.name,
                         temp: Math.round(data.main.temp),
-                        desc: data.weather[0].description
+                        desc: data.weather[0].description,
+                        icon: data.weather[0].icon,
+                        classname: 'widget__container widget__container--visible'
                     });
                 })
             },
 
             getSelected: function(city) {
+                this.setState({classname: 'widget__container'});
                 fetch('/' + city)
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
                         name: data.name,
                         temp: Math.round(data.main.temp),
-                        desc: data.weather[0].description
+                        desc: data.weather[0].description,
+                        icon: data.weather[0].icon,
+                        classname: 'widget__container widget__container--visible'
                     });
                 })
             },
@@ -254,23 +290,27 @@
             render: function() {
 
                 return (
-                    <div className="widget__container">
-                    
+                    <div className = {this.state.classname}>
                         <div className="widget__img">
-                            <CityImg img = {this.state.name}/>
+                            <CityImg img = {this.state.name} />
                         </div>
                         <div className="widget__board">
                             <div className="widget__board--center">
-                                <div className="widget__board--left">
-                                    <CityTemp temp = {this.state.temp}/>
-                                    <CityDesc desc = {this.state.desc}/>
+                                <div className="widget__board--top">
+                                    <div className="widget__board--left">
+                                        <CityTemp temp = {this.state.temp}/>
+                                        <div className="widget__conditions">
+                                            <CityIcon icon = {this.state.icon} alt= {this.state.desc}/>
+                                            <CityDesc desc = {this.state.desc}/>
+                                        </div>
+                                    </div>
+                                    <div className="widget__board--right">
+                                        <CityName name = {this.state.name}/>
+                                        <div className="widget__date">{this.getDate()}</div>
+                                    </div>
                                 </div>
-                                <div className="widget__board--right">
-                                    <CityName name = {this.state.name}/>
-                                    <div className="widget__date">{this.getDate()}</div>
-                                </div>
+                                <Input getNewCity = {this.getSelected} />
                             </div>
-                            <Input getNewCity = {this.getSelected}/>
                         </div>
                     </div>
                 );
