@@ -39,6 +39,7 @@
             },
 
             onChange: function(event, newValue) {
+                this.props.error(false);
                 this.setState({
                     value: newValue.newValue
                 });
@@ -232,13 +233,23 @@
 
         });
 
+        var ErrorMessage = React.createClass({
 
+            render: function() {
+
+                return (
+                    <div className="widget__error">Sorry, we can't find this city's weather</div>
+                );
+            }
+
+        });
 
         var Widget = React.createClass({
 
             getInitialState: function() {
                 return {
-                    classname: 'widget__container'
+                    classname: 'widget__container',
+                    error: false
                 }
             },
 
@@ -262,13 +273,21 @@
                 fetch('/' + city)
                 .then(response => response.json())
                 .then(data => {
-                    this.setState({
-                        name: data.name,
-                        temp: Math.round(data.main.temp),
-                        desc: data.weather[0].description,
-                        icon: data.weather[0].icon,
-                        classname: 'widget__container widget__container--visible'
-                    });
+                    if(data.cod === 200) {
+                        this.setState({
+                            name: data.name,
+                            temp: Math.round(data.main.temp),
+                            desc: data.weather[0].description,
+                            icon: data.weather[0].icon,
+                            classname: 'widget__container widget__container--visible'
+                        });
+                    }
+                    else {
+                        this.setState({
+                            classname: 'widget__container widget__container--visible',
+                            error: true
+                        });
+                    }
                 })
             },
 
@@ -287,7 +306,21 @@
                 return date;
             },
 
+            errorHandler: function(status) {
+                this.setState({error: status});
+            },
+
             render: function() {
+
+                function IsError(prop) {
+                    var foo = prop.status;
+                    if(foo) {
+                        return <ErrorMessage />
+                    }
+                    else {
+                        return <div></div>
+                    }
+                };
 
                 return (
                     <div className = {this.state.classname}>
@@ -309,7 +342,8 @@
                                         <div className="widget__date">{this.getDate()}</div>
                                     </div>
                                 </div>
-                                <Input getNewCity = {this.getSelected} />
+                                <Input getNewCity = {this.getSelected} error = {this.errorHandler}/>
+                                <IsError status = {this.state.error} />
                             </div>
                         </div>
                     </div>
