@@ -45,6 +45,16 @@
                 });
             },
 
+            onKeyDown: function(event) {
+                if (event.keyCode === 13) {
+                    var val = this.getSuggestions({value: event.target.value});
+                    this.setState({value: val[0]}, function() {
+                        this.props.getNewCity(this.state.value);
+                    });
+                    
+                }
+            },
+
             onSuggestionsFetchRequested: function (value) {
                 this.setState({
                     suggestions: this.getSuggestions(value)
@@ -58,7 +68,6 @@
             },
 
             onSuggestionSelected: function (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-               
                 this.setState({value: suggestion}, function() {
                     this.props.getNewCity(this.state.value);
                 });
@@ -90,7 +99,8 @@
                 var inputProps = {
                     placeholder: 'Enter city name',
                     value,
-                    onChange: this.onChange
+                    onChange: this.onChange,
+                    onKeyDown: this.onKeyDown
                 };
 
                 return (
@@ -223,12 +233,23 @@
 
             render: function() {
 
-                var src = "../src/images/" + this.props.img + ".png";
-                var alt = "image of " + this.props.img;
+                var src, alt;
 
-                return (
-                    <img className ="city_img" src={src} alt={alt} />
-                );
+                fetch(src)
+                .then(response => response.status)
+                .then(data => {
+                    console.log(data);
+                    if(data === "200") {
+                        src = "../src/images/" + this.props.img + ".png";
+                        alt = "image of " + this.props.img;
+                    }
+                    else {
+                        src="../src/images/404.png";
+                        alt="картинка не найдена";
+                    }
+                });
+
+                return <img className ="city_img" src={src} alt={alt} />
             }
 
         });
@@ -313,12 +334,21 @@
             render: function() {
 
                 function IsError(prop) {
-                    var foo = prop.status;
-                    if(foo) {
+                    var status = prop.status;
+                    if(status) {
                         return <ErrorMessage />
                     }
                     else {
                         return <div></div>
+                    }
+                };
+
+                function foo(status) {
+                    if(status) {
+                        return <Container className="widget__container widget__container--visible" />
+                    }
+                    else {
+                        <Container className="widget__container" />
                     }
                 };
 
