@@ -193,25 +193,25 @@
             getInitialState: function() {
                 return {
                     icon: null,
+                    src: null,
                     alt: null
                 }
             },
 
             componentDidUpdate(prevProps) {
                 if(this.props.icon !== prevProps.icon) {
-                    this.setState({icon: this.props.icon, alt: this.props.alt});
+                    this.setState({
+                        icon: this.props.icon,
+                        src: "../src/icons/" + this.props.icon + ".svg",
+                        alt: this.props.alt + " icon"
+                    });
                 }
             },
 
             render: function() {
 
-                var src = "../src/icons/" + this.props.icon + ".svg";
-                var alt = this.props.alt + " icon";
-
                 return (
-                   <img className ="widget__icon" src= {src} alt={alt}/>
-
-                    
+                   <img className ="widget__icon" src= {this.state.src} alt={this.state.alt}/>
                 );
             }
 
