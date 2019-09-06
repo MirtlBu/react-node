@@ -231,14 +231,14 @@
                 if(this.props.img !== prevProps.img) {
                     this.setState({img: this.props.img});
                     var name = this.props.img;
-                    var spaceless = name.replace(/[.,\-'\s+]/g, '');
+                    var namecombed = name.replace(/[.,\-'\s+]/g, '').toLowerCase();
 
-                    fetch("../src/images/" + this.props.img + ".png")
+                    fetch("../src/images/" + namecombed + ".png")
                     .then(response => response.status)
                     .then(data => {
                         if(data === 200) {
                             this.setState({
-                                src: "../src/images/" + spaceless + ".png",
+                                src: "../src/images/" + namecombed + ".png",
                                 alt: "image of " + this.props.img
                             });
                         }
