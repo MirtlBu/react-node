@@ -230,14 +230,15 @@
             componentDidUpdate(prevProps) {
                 if(this.props.img !== prevProps.img) {
                     this.setState({img: this.props.img});
-                    var src = "../src/images/" + this.props.img + ".png";
+                    var name = this.props.img;
+                    var spaceless = name.replace(/[.,\-'\s+]/g, '');
 
-                    fetch(src)
+                    fetch("../src/images/" + this.props.img + ".png")
                     .then(response => response.status)
                     .then(data => {
                         if(data === 200) {
                             this.setState({
-                                src: "../src/images/" + this.props.img + ".png",
+                                src: "../src/images/" + spaceless + ".png",
                                 alt: "image of " + this.props.img
                             });
                         }
