@@ -221,35 +221,39 @@
 
             getInitialState: function() {
                 return {
-                    img: null
+                    img: null,
+                    src: null,
+                    alt: null
                 }
             },
 
             componentDidUpdate(prevProps) {
                 if(this.props.img !== prevProps.img) {
                     this.setState({img: this.props.img});
+                    var src = "../src/images/" + this.props.img + ".png";
+
+                    fetch(src)
+                    .then(response => response.status)
+                    .then(data => {
+                        if(data === 200) {
+                            this.setState({
+                                src: "../src/images/" + this.props.img + ".png",
+                                alt: "image of " + this.props.img
+                            });
+                        }
+                        else {
+                            this.setState({
+                                src: "../src/images/404.png",
+                                alt: "default city"
+                            });
+                        }
+                    });
                 }
             },
 
             render: function() {
 
-                var src, alt;
-
-                fetch(src)
-                .then(response => response.status)
-                .then(data => {
-                    console.log(data);
-                    if(data === "200") {
-                        src = "../src/images/" + this.props.img + ".png";
-                        alt = "image of " + this.props.img;
-                    }
-                    else {
-                        src="../src/images/404.png";
-                        alt="картинка не найдена";
-                    }
-                });
-
-                return <img className ="city_img" src={src} alt={alt} />
+                return <img className ="city_img" src={this.state.src} alt={this.state.alt} />
             }
 
         });
