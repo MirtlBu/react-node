@@ -9,7 +9,7 @@
     <script src="../src/js/browser.min.js"></script>
     <script src="https://unpkg.com/react-autosuggest/dist/standalone/autosuggest.js"></script>
     <link rel="stylesheet" media="all" href="../src/css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300&display=swap" rel="stylesheet">
 
 </head>
 <body>
@@ -363,23 +363,19 @@
                             <CityImg img = {this.state.name} />
                         </div>
                         <div className="widget__board">
-                            <div className="widget__board--center">
-                                <div className="widget__board--top">
-                                    <div className="widget__board--left">
-                                        <CityTemp temp = {this.state.temp}/>
-                                        <div className="widget__conditions">
-                                            <CityIcon icon = {this.state.icon} alt= {this.state.desc}/>
-                                            <CityDesc desc = {this.state.desc}/>
-                                        </div>
-                                    </div>
-                                    <div className="widget__board--right">
-                                        <CityName name = {this.state.name}/>
-                                        <div className="widget__date">{this.getDate()}</div>
-                                    </div>
+                            <div className="widget__weather">
+                                <CityTemp temp = {this.state.temp}/>
+                                <div className="widget__conditions">
+                                    <CityIcon icon = {this.state.icon} alt= {this.state.desc}/>
+                                    <CityDesc desc = {this.state.desc}/>
                                 </div>
-                                <Input getNewCity = {this.getSelected} error = {this.errorHandler}/>
-                                <IsError status = {this.state.error} />
                             </div>
+                            <div className="widget__dimension">
+                                <CityName name = {this.state.name}/>
+                                <div className="widget__date">{this.getDate()}</div>
+                            </div>
+                            <Input getNewCity = {this.getSelected} error = {this.errorHandler}/>
+                            <IsError status = {this.state.error} />
                         </div>
                     </div>
                 );
