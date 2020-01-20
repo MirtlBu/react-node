@@ -27,7 +27,7 @@ app.get('/current', function(req, res) {
 
     request('https://ipinfo.io', function (err, response, body) {
         var obj = JSON.parse(body);
-        getTemp(obj.city);
+        return (obj.city ? getTemp(obj.city) : getTemp("London"));
     });
 });
 
